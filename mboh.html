@@ -24,9 +24,6 @@
     <!-- Input for Text to Encrypt -->
     <textarea id="textToEncrypt" rows="4" placeholder="Enter text to encrypt"></textarea>
 
-    <!-- Input for Encryption Key -->
-    <input type="password" id="encryptionKey" placeholder="Enter encryption key" />
-
     <!-- Button to Encrypt -->
     <button onclick="encryptText()">Encrypt</button>
 
@@ -40,34 +37,35 @@
     <textarea id="decryptedText" rows="4" placeholder="Decrypted text will appear here" readonly></textarea>
 
     <script>
+        // Define a fixed key
+        const fixedKey = "your-fixed-key";
+
         // Function to encrypt the text
         function encryptText() {
             var text = document.getElementById("textToEncrypt").value;
-            var key = document.getElementById("encryptionKey").value;
 
-            if (text && key) {
-                var encrypted = CryptoJS.AES.encrypt(text, key).toString();
+            if (text) {
+                var encrypted = CryptoJS.AES.encrypt(text, fixedKey).toString();
                 document.getElementById("encryptedText").value = encrypted;
             } else {
-                alert("Please enter text and key.");
+                alert("Please enter text to encrypt.");
             }
         }
 
         // Function to decrypt the text
         function decryptText() {
             var encryptedText = document.getElementById("encryptedText").value;
-            var key = document.getElementById("encryptionKey").value;
 
-            if (encryptedText && key) {
+            if (encryptedText) {
                 try {
-                    var decrypted = CryptoJS.AES.decrypt(encryptedText, key);
+                    var decrypted = CryptoJS.AES.decrypt(encryptedText, fixedKey);
                     var originalText = decrypted.toString(CryptoJS.enc.Utf8);
                     document.getElementById("decryptedText").value = originalText;
                 } catch (error) {
-                    alert("Decryption failed. Please check your key.");
+                    alert("Decryption failed. Please check the encrypted text.");
                 }
             } else {
-                alert("Please enter encrypted text and key.");
+                alert("Please enter encrypted text to decrypt.");
             }
         }
     </script>
