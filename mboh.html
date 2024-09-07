@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 Encode and Decode Text</title>
+    <title>AES Encrypt and Decrypt Text</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,49 +19,54 @@
 </head>
 <body>
 
-    <h1>Base64 Encode and Decode Text</h1>
+    <h1>AES Encrypt and Decrypt Text</h1>
 
-    <!-- Input for Text to Encode -->
-    <textarea id="textToEncode" rows="4" placeholder="Enter text to encode"></textarea>
+    <!-- Input for Text to Encrypt -->
+    <textarea id="textToEncrypt" rows="4" placeholder="Enter text to encrypt"></textarea>
 
-    <!-- Button to Encode -->
-    <button onclick="encodeText()">Encode</button>
+    <!-- Button to Encrypt -->
+    <button onclick="encryptText()">Encrypt</button>
 
-    <!-- Output for Encoded Text -->
-    <textarea id="encodedText" rows="4" placeholder="Encoded text will appear here" readonly></textarea>
+    <!-- Output for Encrypted Text -->
+    <textarea id="encryptedText" rows="4" placeholder="Encrypted text will appear here" readonly></textarea>
 
-    <!-- Button to Decode -->
-    <button onclick="decodeText()">Decode</button>
+    <!-- Button to Decrypt -->
+    <button onclick="decryptText()">Decrypt</button>
 
-    <!-- Output for Decoded Text -->
-    <textarea id="decodedText" rows="4" placeholder="Decoded text will appear here" readonly></textarea>
+    <!-- Output for Decrypted Text -->
+    <textarea id="decryptedText" rows="4" placeholder="Decrypted text will appear here" readonly></textarea>
 
     <script>
-        // Function to encode the text to Base64
-        function encodeText() {
-            var text = document.getElementById("textToEncode").value;
-            
+        // Define a fixed key and initialization vector (IV)
+        const fixedKey = CryptoJS.enc.Hex.parse('00112233445566778899aabbccddeeff'); // 16 bytes key for AES-128
+        const fixedIv = CryptoJS.enc.Hex.parse('0102030405060708090a0b0c0d0e0f10'); // 16 bytes IV for AES
+
+        // Function to encrypt the text
+        function encryptText() {
+            var text = document.getElementById("textToEncrypt").value;
+
             if (text) {
-                var encoded = btoa(text); // Encode to Base64
-                document.getElementById("encodedText").value = encoded;
+                var encrypted = CryptoJS.AES.encrypt(text, fixedKey, { iv: fixedIv }).toString();
+                document.getElementById("encryptedText").value = encrypted;
             } else {
-                alert("Please enter text to encode.");
+                alert("Please enter text to encrypt.");
             }
         }
 
-        // Function to decode the Base64 encoded text
-        function decodeText() {
-            var encodedText = document.getElementById("encodedText").value;
-            
-            if (encodedText) {
+        // Function to decrypt the text
+        function decryptText() {
+            var encryptedText = document.getElementById("encryptedText").value;
+
+            if (encryptedText) {
                 try {
-                    var decoded = atob(encodedText); // Decode from Base64
-                    document.getElementById("decodedText").value = decoded;
+                    var decrypted = CryptoJS.AES.decrypt(encryptedText, fixedKey, { iv: fixedIv });
+                    var originalText = decrypted.toString(CryptoJS.enc.Utf8);
+                    document.getElementById("decryptedText").value = originalText;
                 } catch (error) {
-                    alert("Decoding failed. Please check the encoded text.");
+                    alert("Decryption failed. Please check the encrypted text.");
                 }
             } else {
-                alert("Please enter encoded text to decode.");
+                alert("Please enter encrypted text to decrypt.");
             }
         }
     </script>
